@@ -1,0 +1,12 @@
+Apr 29, 2020 7:41:12 PM logging.Logger log
+INFO: Start
+Apr 29, 2020 7:41:12 PM logging.Logger log
+INFO: Started working
+Apr 29, 2020 7:41:14 PM logging.Logger log
+INFO: Worker put the result in the s3
+Apr 29, 2020 7:41:15 PM logging.Logger log
+INFO: Sent finish msg to the notifications q
+Apr 29, 2020 7:41:15 PM logging.Logger log
+INFO: Done
+Apr 29, 2020 7:41:15 PM logging.Logger log
+INFO: Done
