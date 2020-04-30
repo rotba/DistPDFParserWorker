@@ -1,9 +1,11 @@
 public class FailedOperationResult extends OperationResult {
     private final String operationNotImpleneted;
+    private final Throwable throwable;
 
-    public FailedOperationResult(String operationNotImpleneted) {
+    public FailedOperationResult(String operationNotImpleneted, Throwable throwable) {
         super(null);
         this.operationNotImpleneted = operationNotImpleneted;
+        this.throwable = throwable;
     }
 
     @Override

@@ -1,11 +1,14 @@
-Apr 30, 2020 7:28:49 PM logging.Logger log
-SEVERE: [Ljava.lang.StackTraceElement;@34bbef1c
-software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
-	at software.amazon.awssdk.core.exception.AbortedException$BuilderImpl.build(AbortedException.java:83)
-	at software.amazon.awssdk.core.exception.AbortedException.create(AbortedException.java:38)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.handleTimeoutCausedException(TimeoutExceptionHandlingStage.java:116)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.translatePipelineException(TimeoutExceptionHandlingStage.java:94)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:79)
+Apr 30, 2020 10:03:39 PM logging.Logger log
+SEVERE: [Ljava.lang.StackTraceElement;@3cb8603e
+software.amazon.awssdk.services.sqs.model.SqsException: The request must contain the parameter ReceiptHandle. (Service: Sqs, Status Code: 400, Request ID: c06a28a3-fe19-5031-bfbb-7f86dd52060a)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.HandleResponseStage.handleErrorResponse(HandleResponseStage.java:115)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.HandleResponseStage.handleResponse(HandleResponseStage.java:73)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.HandleResponseStage.execute(HandleResponseStage.java:58)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.HandleResponseStage.execute(HandleResponseStage.java:41)
+	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallAttemptTimeoutTrackingStage.execute(ApiCallAttemptTimeoutTrackingStage.java:63)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallAttemptTimeoutTrackingStage.execute(ApiCallAttemptTimeoutTrackingStage.java:36)
+	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:77)
 	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:39)
 	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage$RetryExecutor.doExecute(RetryableStage.java:113)
 	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage$RetryExecutor.execute(RetryableStage.java:86)
@@ -27,79 +30,33 @@ software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.client.handler.BaseSyncClientHandler.execute(BaseSyncClientHandler.java:73)
 	at software.amazon.awssdk.core.client.handler.SdkSyncClientHandler.execute(SdkSyncClientHandler.java:44)
 	at software.amazon.awssdk.awscore.client.handler.AwsSyncClientHandler.execute(AwsSyncClientHandler.java:55)
-	at software.amazon.awssdk.services.sqs.DefaultSqsClient.receiveMessage(DefaultSqsClient.java:1044)
-	at Worker.receive(Worker.java:80)
-	at Worker.work(Worker.java:157)
-	at Main.main(Main.java:42)
-	at MainTest.lambda$main$0(MainTest.java:200)
-	at java.base/java.lang.Thread.run(Thread.java:834)
-Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
-	at software.amazon.awssdk.core.internal.http.InterruptMonitor.checkInterrupted(InterruptMonitor.java:39)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.AfterTransmissionExecutionInterceptorsStage.execute(AfterTransmissionExecutionInterceptorsStage.java:34)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.AfterTransmissionExecutionInterceptorsStage.execute(AfterTransmissionExecutionInterceptorsStage.java:28)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallAttemptTimeoutTrackingStage.execute(ApiCallAttemptTimeoutTrackingStage.java:63)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallAttemptTimeoutTrackingStage.execute(ApiCallAttemptTimeoutTrackingStage.java:36)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:77)
-	... 27 more
-
-Apr 30, 2020 7:28:57 PM logging.Logger log
-SEVERE: [Ljava.lang.StackTraceElement;@4da7c841
-Worker$NotImplementedException
-	at Worker.accept(Worker.java:34)
-	at OperationMessage$ToImage.visit(OperationMessage.java:71)
-	at Worker.process(Worker.java:57)
-	at Worker.work(Worker.java:158)
-	at Main.main(Main.java:42)
-	at MainTest.lambda$main$0(MainTest.java:200)
+	at software.amazon.awssdk.services.sqs.DefaultSqsClient.changeMessageVisibility(DefaultSqsClient.java:280)
+	at VisibilityManagement.run(VisibilityManagement.java:41)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 
-Apr 30, 2020 7:29:06 PM logging.Logger log
-SEVERE: [Ljava.lang.StackTraceElement;@12c28fc7
-software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
-	at software.amazon.awssdk.core.exception.AbortedException$BuilderImpl.build(AbortedException.java:83)
-	at software.amazon.awssdk.core.exception.AbortedException.create(AbortedException.java:38)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.handleTimeoutCausedException(TimeoutExceptionHandlingStage.java:116)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.translatePipelineException(TimeoutExceptionHandlingStage.java:94)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:79)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:39)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage$RetryExecutor.doExecute(RetryableStage.java:113)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage$RetryExecutor.execute(RetryableStage.java:86)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage.execute(RetryableStage.java:62)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.RetryableStage.execute(RetryableStage.java:42)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.StreamManagingStage.execute(StreamManagingStage.java:51)
-	at software.amazon.awssdk.core.internal.http.StreamManagingStage.execute(StreamManagingStage.java:33)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallTimeoutTrackingStage.executeWithTimer(ApiCallTimeoutTrackingStage.java:79)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallTimeoutTrackingStage.execute(ApiCallTimeoutTrackingStage.java:60)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallTimeoutTrackingStage.execute(ApiCallTimeoutTrackingStage.java:42)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ExecutionFailureExceptionReportingStage.execute(ExecutionFailureExceptionReportingStage.java:37)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ExecutionFailureExceptionReportingStage.execute(ExecutionFailureExceptionReportingStage.java:26)
-	at software.amazon.awssdk.core.internal.http.AmazonSyncHttpClient$RequestExecutionBuilderImpl.execute(AmazonSyncHttpClient.java:240)
-	at software.amazon.awssdk.core.client.handler.BaseSyncClientHandler.invoke(BaseSyncClientHandler.java:96)
-	at software.amazon.awssdk.core.client.handler.BaseSyncClientHandler.execute(BaseSyncClientHandler.java:120)
-	at software.amazon.awssdk.core.client.handler.BaseSyncClientHandler.execute(BaseSyncClientHandler.java:73)
-	at software.amazon.awssdk.core.client.handler.SdkSyncClientHandler.execute(SdkSyncClientHandler.java:44)
-	at software.amazon.awssdk.awscore.client.handler.AwsSyncClientHandler.execute(AwsSyncClientHandler.java:55)
-	at software.amazon.awssdk.services.sqs.DefaultSqsClient.receiveMessage(DefaultSqsClient.java:1044)
-	at Worker.receive(Worker.java:80)
-	at Worker.work(Worker.java:157)
+Apr 30, 2020 10:04:01 PM logging.Logger log
+SEVERE: [Ljava.lang.StackTraceElement;@1f3997bb
+java.io.UncheckedIOException: java.nio.file.NoSuchFileException: /home/rotemb271/Code/School/semester_8/DSP/ex1/DistPDFParser/worker/output_files/rotemb271TestOutputKey
+	at software.amazon.awssdk.utils.FunctionalUtils.asRuntimeException(FunctionalUtils.java:180)
+	at software.amazon.awssdk.utils.FunctionalUtils.lambda$safeSupplier$4(FunctionalUtils.java:110)
+	at software.amazon.awssdk.utils.FunctionalUtils.invokeSafely(FunctionalUtils.java:136)
+	at software.amazon.awssdk.core.sync.RequestBody.fromFile(RequestBody.java:88)
+	at software.amazon.awssdk.services.s3.S3Client.putObject(S3Client.java:5143)
+	at Worker.post(Worker.java:75)
+	at Worker.work(Worker.java:193)
 	at Main.main(Main.java:42)
-	at MainTest.lambda$main$0(MainTest.java:200)
+	at MainTest.lambda$main$0(MainTest.java:188)
 	at java.base/java.lang.Thread.run(Thread.java:834)
-Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
-	at software.amazon.awssdk.core.internal.http.InterruptMonitor.checkInterrupted(InterruptMonitor.java:39)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.AfterTransmissionExecutionInterceptorsStage.execute(AfterTransmissionExecutionInterceptorsStage.java:34)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.AfterTransmissionExecutionInterceptorsStage.execute(AfterTransmissionExecutionInterceptorsStage.java:28)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.RequestPipelineBuilder$ComposingRequestPipelineStage.execute(RequestPipelineBuilder.java:206)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallAttemptTimeoutTrackingStage.execute(ApiCallAttemptTimeoutTrackingStage.java:63)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.ApiCallAttemptTimeoutTrackingStage.execute(ApiCallAttemptTimeoutTrackingStage.java:36)
-	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:77)
-	... 27 more
+Caused by: java.nio.file.NoSuchFileException: /home/rotemb271/Code/School/semester_8/DSP/ex1/DistPDFParser/worker/output_files/rotemb271TestOutputKey
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:116)
+	at java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:55)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:149)
+	at java.base/sun.nio.fs.LinuxFileSystemProvider.readAttributes(LinuxFileSystemProvider.java:99)
+	at java.base/java.nio.file.Files.readAttributes(Files.java:1763)
+	at java.base/java.nio.file.Files.size(Files.java:2380)
+	at software.amazon.awssdk.core.sync.RequestBody.lambda$fromFile$2(RequestBody.java:88)
+	at software.amazon.awssdk.utils.FunctionalUtils.lambda$safeSupplier$4(FunctionalUtils.java:108)
+	... 8 more
 

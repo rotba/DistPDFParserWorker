@@ -1,70 +1,22 @@
-Apr 30, 2020 7:28:39 PM logging.Logger log
+Apr 30, 2020 10:03:23 PM logging.Logger log
 INFO: Start
-Apr 30, 2020 7:28:39 PM logging.Logger log
+Apr 30, 2020 10:03:23 PM logging.Logger log
 INFO: Started working
-Apr 30, 2020 7:28:39 PM logging.Logger log
+Apr 30, 2020 10:03:23 PM logging.Logger log
 INFO: Started working on a message
-Apr 30, 2020 7:28:39 PM logging.Logger log
+Apr 30, 2020 10:03:23 PM logging.Logger log
 INFO: receiving
-Apr 30, 2020 7:28:40 PM logging.Logger log
+Apr 30, 2020 10:03:24 PM logging.Logger log
 INFO: busy waiting for message
-Apr 30, 2020 7:28:40 PM logging.Logger log
-INFO: Got message -a FORTESTING -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -b rotemb271-test-output-bucket2 -k rotemb271TestOutputKey -t 2020-04-30T16:28:39.257789Z
-Apr 30, 2020 7:28:40 PM logging.Logger log
-INFO: Handling FORTESTING
-Apr 30, 2020 7:28:40 PM logging.Logger log
-INFO: posting
-Apr 30, 2020 7:28:40 PM logging.Logger log
-INFO: Visibility manager interrupted and stops working
-Apr 30, 2020 7:28:40 PM logging.Logger log
-INFO: posting
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: deleting
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: notifing
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: notifiyng: -a FORTESTING -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -s SUCCESS -t 2020-04-30T16:28:39.257789Z -d success -u https://rotemb271-test-output-bucket2.s3.amazonaws.com/rotemb271TestOutputKey
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: Done handling a message
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: Started working on a message
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: receiving
-Apr 30, 2020 7:28:42 PM logging.Logger log
-INFO: busy waiting for message
-Apr 30, 2020 7:28:49 PM logging.Logger log
-INFO: Done
-Apr 30, 2020 7:28:56 PM logging.Logger log
-INFO: Start
-Apr 30, 2020 7:28:56 PM logging.Logger log
-INFO: Started working
-Apr 30, 2020 7:28:56 PM logging.Logger log
-INFO: Started working on a message
-Apr 30, 2020 7:28:56 PM logging.Logger log
-INFO: receiving
-Apr 30, 2020 7:28:56 PM logging.Logger log
-INFO: busy waiting for message
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: Got message -a ToImage -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -b rotemb271-test-output-bucket2 -k rotemb271TestOutputKey -t 2020-04-30T16:28:56.010582Z
-Apr 30, 2020 7:28:57 PM logging.Logger log
+Apr 30, 2020 10:03:24 PM logging.Logger log
+INFO: Got message -a ToImage -i http://www.jfrankhenderson.com/pdf/jesusandseder.PDF -b rotemb271-test-output-bucket2 -k rotemb271TestOutputKey -t 2020-04-30T19:03:23.077263Z
+Apr 30, 2020 10:03:24 PM logging.Logger log
 INFO: Handling ToImage
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: Not posting anything
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: Visibility manager interrupted and stops working
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: deleting
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: notifing
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: notifiyng: -a ToImage -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -t 2020-04-30T16:28:56.010582Z -s FAIL -d "Operation not implemented" -u https://rotemb271-test-output-bucket2.s3.amazonaws.com/rotemb271TestOutputKey
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: Done handling a message
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: Started working on a message
-Apr 30, 2020 7:28:57 PM logging.Logger log
-INFO: receiving
-Apr 30, 2020 7:28:58 PM logging.Logger log
-INFO: busy waiting for message
-Apr 30, 2020 7:29:06 PM logging.Logger log
+Apr 30, 2020 10:03:39 PM logging.Logger log
+INFO: Visibiliti manger increases visibility timout to 180
+Apr 30, 2020 10:04:01 PM logging.Logger log
+INFO: posting
+Apr 30, 2020 10:04:01 PM logging.Logger log
+INFO: posting
+Apr 30, 2020 10:04:01 PM logging.Logger log
 INFO: Done

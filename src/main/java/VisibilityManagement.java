@@ -41,7 +41,7 @@ public class VisibilityManagement implements Runnable {
                 sqsClient.changeMessageVisibility(changeMessageVisibilityRequest);
             }
         }catch (Exception e){
-            severLogger.log("Visibility logger failed", e);
+            severLogger.log("Visibility logger failed, stopping visibility manager", e);
             return;
         }
     }

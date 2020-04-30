@@ -9,7 +9,7 @@ public class MainToImageTest extends MainTest{
 
     @Override
     protected String getOperationCMD() {
-        input = "http://www.jewishfederations.org/local_includes/downloads/39497.pdf";
+        input = "http://www.jfrankhenderson.com/pdf/jesusandseder.PDF";
         action = "ToImage";
         nowInstant = Instant.now().toString();
         return String.join(" ",

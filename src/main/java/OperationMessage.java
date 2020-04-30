@@ -63,6 +63,14 @@ class OperationMessage {
     }
     abstract class Action{
         public abstract OperationResult visit(Worker worker) throws Worker.NotImplementedException;
+
+        public  String getInput(){
+            return OperationMessage.this.getInput();
+        }
+
+        public String getKey() {
+            return OperationMessage.this.getKey();
+        }
     }
 
     class ToImage extends Action{

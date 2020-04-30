@@ -60,19 +60,7 @@ public abstract class MainTest {
         DeleteQueueRequest deleteQueueRequest = DeleteQueueRequest.builder()
                 .queueUrl(queueUrl)
                 .build();
-//        sqs.deleteQueue(deleteQueueRequest);
-//        ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
-//                .queueUrl(queueUrl)
-//                .maxNumberOfMessages(10)
-//                .build();
-//        for (Message m:sqs.receiveMessage(receiveRequest).messages()) {
-//            DeleteMessageRequest delete = DeleteMessageRequest.builder()
-//                    .queueUrl(queueUrl)
-//                    .receiptHandle(m.receiptHandle())
-//                    .build();
-//            sqs.deleteMessage(delete);
-//        }
-
+        sqs.deleteQueue(deleteQueueRequest);
     }
 
     @After
