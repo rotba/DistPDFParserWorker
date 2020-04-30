@@ -22,6 +22,9 @@ class OperationMessage {
         Option outBucketKey = new Option("k", "outputBucketKey", true, "output bucket key");
         outBucketKey.setRequired(true);
         operationParsingOptions.addOption(outBucketKey);
+        Option timeStamp = new Option("t", "timestamp", true, "unique timestamp");
+        timeStamp.setRequired(true);
+        operationParsingOptions.addOption(timeStamp);
         CommandLineParser operationParser = new DefaultParser();
         operation = operationParser.parse(operationParsingOptions, message.body().split("\\s+"));
     }
@@ -50,6 +53,9 @@ class OperationMessage {
 
     public String getKey() {
         return operation.getOptionValue("k");
+    }
+    public String getTimeStamp() {
+        return operation.getOptionValue("t");
     }
 
     public Message getMessage() {

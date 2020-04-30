@@ -14,29 +14,28 @@ import software.amazon.awssdk.services.sqs.model.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class MainTest {
+public abstract class MainTest {
 
     private Thread theMainThread;
     private String pushNotoficationsSqs;
-    private String outputS3Bucket;
-    private String outputS3Key;
-    private String region;
+    protected String outputS3Bucket;
+    protected String outputS3Key;
     private SqsClient sqs;
     private S3Client s3;
     private String operationsSqs;
-    private String operationMsgId;
 
 
     @Before
     public void setUp() throws Exception {
-        pushNotoficationsSqs = "rotemb271TestPushNotificationsSqs";
-        operationsSqs = "rotemb271TestPushOperationsSqs";
+        pushNotoficationsSqs = "rotemb271TestPushNotificationsSqs"+new Date().getTime();
+        operationsSqs = "rotemb271TestPushOperationsSqs"+ new Date().getTime();
         outputS3Bucket = "rotemb271-test-output-bucket2";
         outputS3Key = "rotemb271TestOutputKey";
-        region = String.format("s3-%s",Main.region);
         sqs = SqsClient.builder().region(Region.US_EAST_1).build();
         sqs.createQueue(CreateQueueRequest.builder()
                 .queueName(pushNotoficationsSqs)
@@ -57,22 +56,29 @@ public class MainTest {
                         .queueName(sqsName)
                         .build()
         ).queueUrl();
-        ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
+
+        DeleteQueueRequest deleteQueueRequest = DeleteQueueRequest.builder()
                 .queueUrl(queueUrl)
-                .maxNumberOfMessages(10)
                 .build();
-        for (Message m:sqs.receiveMessage(receiveRequest).messages()) {
-            DeleteMessageRequest delete = DeleteMessageRequest.builder()
-                    .queueUrl(queueUrl)
-                    .receiptHandle(m.receiptHandle())
-                    .build();
-            sqs.deleteMessage(delete);
-        }
+//        sqs.deleteQueue(deleteQueueRequest);
+//        ReceiveMessageRequest receiveRequest = ReceiveMessageRequest.builder()
+//                .queueUrl(queueUrl)
+//                .maxNumberOfMessages(10)
+//                .build();
+//        for (Message m:sqs.receiveMessage(receiveRequest).messages()) {
+//            DeleteMessageRequest delete = DeleteMessageRequest.builder()
+//                    .queueUrl(queueUrl)
+//                    .receiptHandle(m.receiptHandle())
+//                    .build();
+//            sqs.deleteMessage(delete);
+//        }
+
     }
 
     @After
     public void tearDown() throws Exception {
         theMainThread.interrupt();
+        int i = 5;
         emptySQS(pushNotoficationsSqs);
         emptySQS(operationsSqs);
         DescribeInstancesRequest request = DescribeInstancesRequest.builder().build();
@@ -125,15 +131,23 @@ public class MainTest {
         Option url = new Option("u", "url", true, "result url");
         url.setRequired(true);
         operationParsingOptions.addOption(url);
+        Option timestamp = new Option("t", "timestamp", true, "timestamp");
+        timestamp.setRequired(true);
+        operationParsingOptions.addOption(timestamp);
+        Option description = new Option("d", "description", true, "description");
+        description.setRequired(true);
+        operationParsingOptions.addOption(description);
         CommandLineParser operationParser = new DefaultParser();
         try {
-            CommandLine expectedCmd = operationParser.parse(operationParsingOptions, body.split("\\s+"));
+            CommandLine expectedCmd = operationParser.parse(operationParsingOptions, expected);
             CommandLine operationResultCmd = operationParser.parse(operationParsingOptions, body.split("\\s+"));
             return expectedCmd.getOptionValue("a").equals(operationResultCmd.getOptionValue("a")) &&
                     expectedCmd.getOptionValue("i").equals(operationResultCmd.getOptionValue("i")) &&
                     expectedCmd.getOptionValue("s").equals(operationResultCmd.getOptionValue("s")) &&
-                    expectedCmd.getOptionValue("u").equals(operationResultCmd.getOptionValue("u"));
+                    expectedCmd.getOptionValue("u").equals(operationResultCmd.getOptionValue("u")) &&
+                    expectedCmd.getOptionValue("t").equals(operationResultCmd.getOptionValue("t"));
         } catch (ParseException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -175,17 +189,10 @@ public class MainTest {
 
     @Test
     public void main() {
-        String input = "http://www.jewishfederations.org/local_includes/downloads/39497.pdf";
-        String action = "FORTESTING";
         sqs.sendMessage(
                 SendMessageRequest.builder()
                         .queueUrl(sqs.getQueueUrl(GetQueueUrlRequest.builder().queueName(operationsSqs).build()).queueUrl())
-                        .messageBody(String.join(" ",
-                                "-a", action,
-                                "-i", input,
-                                "-b", outputS3Bucket,
-                                "-k", outputS3Key
-                        ))
+                        .messageBody(getOperationCMD())
                         .build()
         );
         theMainThread = new Thread(() -> {
@@ -205,9 +212,12 @@ public class MainTest {
         assertTrue(
                 sqsContainsCommand(
                         pushNotoficationsSqs,
-                        new String[]{"-a",action,"-s","SUCCESS","-i",input,"-u",String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, outputS3Key)}
+                        getExpectedOutputMsg()
                 )
         );
         assertTrue(isImage(download(String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, outputS3Key),outputS3Key)));
     }
+
+    protected abstract String getOperationCMD();
+    protected abstract String[] getExpectedOutputMsg();
 }

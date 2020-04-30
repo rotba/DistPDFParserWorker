@@ -46,13 +46,19 @@ public class Worker {
 
     public OperationResult accept(OperationMessage.FORTESTING fortesting) throws NotImplementedException {
         infoLogger.log("Handling FORTESTING");
-        return new OperationResult();
+        return new OperationResult(Paths.get(System.getProperty("user.dir"), "test_files","input","key.jpg").toString());
     }
 
-    private OperationResult process(OperationMessage operationMessage) throws OperationMessage.UnfamiliarActionException, NotImplementedException {
+    private OperationResult process(OperationMessage operationMessage) throws OperationMessage.UnfamiliarActionException {
         Thread visibilityMenager = new Thread(new VisibilityManagement(initialVisibilityTimeout, operationMessage.getMessage(), sqsClient, operationsSqsName, infoLogger, severLogger));
         visibilityMenager.start();
-        OperationResult res = operationMessage.getAction().visit(this);
+        OperationResult res = null;
+        try {
+            res = operationMessage.getAction().visit(this);
+        } catch (NotImplementedException e) {
+            severLogger.log("Not impleneted operation", e);
+            res = new FailedOperationResult("Operation not implemented");
+        }
         visibilityMenager.interrupt();
         return res;
     }
@@ -81,19 +87,24 @@ public class Worker {
     }
 
     private void post(OperationResult result, OperationMessage message) {
-        infoLogger.log("posting");
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(message.getBucket())
-                .key(message.getKey())
-                .acl("public-read")
-                .build();
-        PutObjectResponse putObjectResponse = s3Client.putObject(
-                putObjectRequest,
-                Paths.get(System.getProperty("user.dir"), "test_files", "input", "key.jpg")
-        );
+        if (result.isSuccess()){
+            infoLogger.log("posting");
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(message.getBucket())
+                    .key(message.getKey())
+                    .acl("public-read")
+                    .build();
+            infoLogger.log("posting");
+            PutObjectResponse putObjectResponse = s3Client.putObject(
+                    putObjectRequest,
+                    Paths.get(result.filePath())
+            );
+        }else{
+            infoLogger.log("Not posting anything");
+        }
     }
 
-    private void delete(OperationMessage currentOperationMessage) {
+    private void delete(OperationMessage currentOperationMessage){
         infoLogger.log("deleting");
         DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
                 .queueUrl(sqsClient.getQueueUrl(GetQueueUrlRequest.builder().queueName(operationsSqsName).build()).queueUrl())
@@ -108,25 +119,33 @@ public class Worker {
         SendMessageRequest.Builder builder = SendMessageRequest.builder()
                 .queueUrl(sqsClient.getQueueUrl(GetQueueUrlRequest.builder().queueName(pushNotificationsSqsName).build()).queueUrl());
         SendMessageRequest sendMessageRequest = null;
+        String body = null;
         if (operationResult.isSuccess()) {
+            body = String.join(" ",
+                    "-a", message.getActionString(),
+                    "-i", message.getInput(),
+                    "-s", "SUCCESS",
+                    "-t", message.getTimeStamp(),
+                    "-d", operationResult.getDesc(),
+                    "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s", message.getBucket(), message.getKey()))
+            );
             sendMessageRequest = builder
-                    .messageBody(String.join(" ",
-                            "-a", message.getActionString(),
-                            "-i", message.getInput(),
-                            "-s", "SUCCESS",
-                            "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s",message.getBucket(), message.getKey()))
-                            )
+                    .messageBody(body
                     ).build();
         }else{
+            body = String.join(" ",
+                    "-a", message.getActionString(),
+                    "-i", message.getInput(),
+                    "-t", message.getTimeStamp(),
+                    "-s", "FAIL",
+                    "-d", operationResult.getDesc(),
+                    "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s", message.getBucket(), message.getKey()))
+            );
             sendMessageRequest = builder
-                    .messageBody(String.join(" ",
-                            "-a", message.getActionString(),
-                            "-i", message.getInput(),
-                            "-s", "FAIL",
-                            "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s",message.getBucket(), message.getKey()))
-                            )
+                    .messageBody(body
                     ).build();
         }
+        infoLogger.log(String.format("notifiyng: %s",body));
         sqsClient.sendMessage(sendMessageRequest);
     }
 
@@ -139,11 +158,9 @@ public class Worker {
                 OperationResult result = process(currentOperationMessage);
                 post(result, currentOperationMessage);
                 delete(currentOperationMessage);
-                notifai(result,currentOperationMessage);
+                notifai(result, currentOperationMessage);
                 infoLogger.log("Done handling a message");
-            } catch (NotImplementedException e) {
-                severLogger.log("Not implemented yet", e);
-            } catch (OperationMessage.UnfamiliarActionException e) {
+            }catch (OperationMessage.UnfamiliarActionException e) {
                 severLogger.log("Unfamiliar action received", e);
             } catch (ParseException e) {
                 severLogger.log("Failed parsing the operation", e);
