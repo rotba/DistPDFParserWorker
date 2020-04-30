@@ -9,29 +9,20 @@ public class Main {
     private static SeverLogger severLogger;
     private static InfoLogger infoLogger;
     public static Region region = Region.US_EAST_1;
+    public final static int initialVisibilityTimoutSecs = 30;
 
     public static void main(String[] args) throws IOException {
         severLogger = new SeverLogger("WorkerSeverLogger","severLog.txt");
         infoLogger = new InfoLogger("WorkerInfoLogger","infoLog.txt");
         infoLogger.log("Start");
         Options options = new Options();
-        Option action = new Option("a", "action", true, "action");
-        action.setRequired(true);
-        options.addOption(action);
-        Option input = new Option("i", "input", true, "input file");
-        input.setRequired(true);
-        options.addOption(input);
-        Option notificationsOutputSqs = new Option("o", "output", true, "notifications output sqs");
+        Option notificationsOutputSqs = new Option("n", "notifications", true, "notifications sqs");
         notificationsOutputSqs.setRequired(true);
         options.addOption(notificationsOutputSqs);
-        Option outBucket = new Option("b", "outputBucket", true, "output bucket");
-        outBucket.setRequired(true);
-        options.addOption(outBucket);
-        Option outBucketKey = new Option("k", "outputBucketKey", true, "output bucket key");
-        outBucketKey.setRequired(true);
-        options.addOption(outBucketKey);
+        Option operationsSqs = new Option("o", "operations", true, "operations sqs");
+        operationsSqs.setRequired(true);
+        options.addOption(operationsSqs);
         CommandLineParser parser = new DefaultParser();
-        HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd = null;
         try {
             cmd = parser.parse(options, args);
@@ -42,12 +33,10 @@ public class Main {
         }
         try {
             new Worker(
-                    cmd.getOptionValue("a"),
-                    cmd.getOptionValue("i"),
+                    cmd.getOptionValue("n"),
                     cmd.getOptionValue("o"),
-                    cmd.getOptionValue("b"),
-                    cmd.getOptionValue("k"),
                     Main.region,
+                    initialVisibilityTimoutSecs,
                     infoLogger,
                     severLogger
             ).work();

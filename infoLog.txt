@@ -1,12 +1,42 @@
-Apr 29, 2020 7:41:12 PM logging.Logger log
+Apr 30, 2020 6:07:56 PM logging.Logger log
 INFO: Start
-Apr 29, 2020 7:41:12 PM logging.Logger log
+Apr 30, 2020 6:07:56 PM logging.Logger log
 INFO: Started working
-Apr 29, 2020 7:41:14 PM logging.Logger log
-INFO: Worker put the result in the s3
-Apr 29, 2020 7:41:15 PM logging.Logger log
-INFO: Sent finish msg to the notifications q
-Apr 29, 2020 7:41:15 PM logging.Logger log
-INFO: Done
-Apr 29, 2020 7:41:15 PM logging.Logger log
+Apr 30, 2020 6:07:56 PM logging.Logger log
+INFO: Started working on a message
+Apr 30, 2020 6:07:56 PM logging.Logger log
+INFO: receiving
+Apr 30, 2020 6:07:56 PM logging.Logger log
+INFO: busy waiting for message
+Apr 30, 2020 6:07:57 PM logging.Logger log
+INFO: Got message -a FORTESTING -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -b rotemb271-test-output-bucket2 -k rotemb271TestOutputKey
+Apr 30, 2020 6:07:57 PM logging.Logger log
+INFO: Handling FORTESTING
+Apr 30, 2020 6:07:57 PM logging.Logger log
+INFO: posting
+Apr 30, 2020 6:07:57 PM logging.Logger log
+INFO: Visibility manager interrupted and stops working
+Apr 30, 2020 6:07:58 PM logging.Logger log
+INFO: deleting
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: notifing
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: Done handling a message
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: Started working on a message
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: receiving
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: busy waiting for message
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: Got message -a FORTESTING -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -b rotemb271-test-output-bucket2 -k rotemb271TestOutputKey
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: Handling FORTESTING
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: posting
+Apr 30, 2020 6:07:59 PM logging.Logger log
+INFO: Visibility manager interrupted and stops working
+Apr 30, 2020 6:08:00 PM logging.Logger log
+INFO: deleting
+Apr 30, 2020 6:08:01 PM logging.Logger log
 INFO: Done
