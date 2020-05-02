@@ -7,17 +7,16 @@ import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
+import org.fit.pdfdom.PDFDomTree;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -173,7 +172,23 @@ public class Worker {
 
     public OperationResult accept(OperationMessage.ToHTML toHTML) throws NotImplementedException {
         infoLogger.log("Handling ToHTML");
-        throw new NotImplementedException();
+        Runtime rt = Runtime.getRuntime();
+        String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toHTML.getInput())).toString();
+        String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toHTML.getKey()).toString();
+        try(Writer output = new PrintWriter(outputPath, "utf-8");) {
+            Process pr = rt.exec(String.format("wget %s -P %s", toHTML.getInput(), Paths.get("input_files")));
+            pr.waitFor();
+            PDDocument wholeDocument = PDDocument.load(new File(fileInputPath));
+            PDDocument theFirstPageDocument = new PDDocument();
+            theFirstPageDocument.addPage(wholeDocument.getPage(0));
+            new PDFDomTree().writeText(theFirstPageDocument, output);
+            wholeDocument.close();
+            theFirstPageDocument.close();
+            return new OperationResult(outputPath,fileInputPath);
+        } catch (IOException  | InterruptedException | ParserConfigurationException e) {
+            severLogger.log("Fail handling ToHTML", e);
+            return new FailedOperationResult("Fail handling ToHTML", e);
+        }
     }
 
     public OperationResult accept(OperationMessage.ToText toText)  {
@@ -192,11 +207,11 @@ public class Worker {
             theFirstPageDocument.close();
             return new OperationResult(outputPath,fileInputPath);
         } catch (IOException e) {
-            severLogger.log("Fail handling ToImage", e);
-            return new FailedOperationResult("Fail handling ToImage", e);
+            severLogger.log("Fail handling ToText", e);
+            return new FailedOperationResult("Fail handling ToText", e);
         } catch (InterruptedException e) {
-            severLogger.log("Fail handling ToImage", e);
-            return new FailedOperationResult("Fail handling ToImage", e);
+            severLogger.log("Fail handling ToText", e);
+            return new FailedOperationResult("Fail handling ToText", e);
         }
     }
 

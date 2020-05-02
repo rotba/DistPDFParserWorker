@@ -82,6 +82,11 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.cssbox</groupId>
+            <artifactId>pdf2dom</artifactId>
+            <version>1.6</version>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>
