@@ -146,17 +146,21 @@ public class Worker {
     public OperationResult accept(OperationMessage.ToImage toImage) throws NotImplementedException {
         infoLogger.log("Handling ToImage");
         Runtime rt = Runtime.getRuntime();
+        String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toImage.getInput())).toString();
+        String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toImage.getKey()).toString();
         try {
             Process pr = rt.exec(String.format("wget %s -P %s", toImage.getInput(), Paths.get("input_files")));
             pr.waitFor();
-            String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toImage.getInput())).toString();
-            String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toImage.getKey()).toString();
-            PDDocument document = PDDocument.load(new File(fileInputPath));
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
+//            PDDocument document = PDDocument.load(new File(fileInputPath));
+            PDDocument wholeDocument = PDDocument.load(new File(fileInputPath));
+            PDDocument theFirstPageDocument = new PDDocument();
+            theFirstPageDocument.addPage(wholeDocument.getPage(0));
+            PDFRenderer pdfRenderer = new PDFRenderer(theFirstPageDocument);
             BufferedImage bim = pdfRenderer.renderImageWithDPI(REQUIRED_PAGE_INDEX, 300, ImageType.RGB);
             // suffix in filename will be used as the file format
             ImageIOUtil.writeImage(bim, outputPath, 300);
-            document.close();
+            wholeDocument.close();
+            theFirstPageDocument.close();
             return new OperationResult(outputPath,fileInputPath);
         } catch (IOException e) {
             severLogger.log("Fail handling ToImage", e);
