@@ -1,18 +1,22 @@
-import java.nio.file.Path;
-
 public class OperationResult {
-    private final String toPath;
+    private final String outputPath;
+    private final String inputPath;
 
-    public OperationResult(String toPath) {
-        this.toPath = toPath;
+    public OperationResult(String outputPath, String inputPath) {
+        this.outputPath = outputPath;
+        this.inputPath = inputPath;
     }
 
     public boolean isSuccess() {
         return true;
     }
 
-    public String filePath() {
-        return toPath;
+    public String getInputPath() {
+        return inputPath;
+    }
+
+    public String getOutputPath() {
+        return outputPath;
     }
 
     public String getDesc() {

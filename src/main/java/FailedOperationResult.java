@@ -3,7 +3,7 @@ public class FailedOperationResult extends OperationResult {
     private final Throwable throwable;
 
     public FailedOperationResult(String operationNotImpleneted, Throwable throwable) {
-        super(null);
+        super(null,null);
         this.operationNotImpleneted = operationNotImpleneted;
         this.throwable = throwable;
     }

@@ -12,15 +12,14 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Date;
 
 public class Worker {
+    private static final int REQUIRED_PAGE_INDEX = 0;
     private String pushNotificationsSqsName;
     private final String operationsSqsName;
     private final int initialVisibilityTimeout;
@@ -40,7 +39,7 @@ public class Worker {
 
     }
 
-    private OperationMessage receive() throws NoMoreOperationsException, ParseException {
+    private OperationMessage receive() throws NoMoreOperationsException, ParseException, OperationMessage.UnfamiliarActionException {
         infoLogger.log("receiving");
         GetQueueUrlRequest getQueueUrlRequest = GetQueueUrlRequest.builder()
                 .queueName(this.operationsSqsName)
@@ -74,10 +73,21 @@ public class Worker {
             infoLogger.log("posting");
             PutObjectResponse putObjectResponse = s3Client.putObject(
                     putObjectRequest,
-                    Paths.get(result.filePath())
+                    Paths.get(result.getOutputPath())
             );
         } else {
             infoLogger.log("Not posting anything");
+        }
+    }
+
+    private void clean(OperationResult result, OperationMessage currentOperationMessage) {
+        infoLogger.log("cleaning");
+        if(currentOperationMessage.getAction() instanceof OperationMessage.FORTESTING) return;
+        try {
+            Files.deleteIfExists(new File(result.getInputPath()).toPath()); //
+            Files.deleteIfExists(new File(result.getOutputPath()).toPath()); //
+        } catch (IOException e) {
+            severLogger.log("Troubles cleaning. NOT stopping worker", e);
         }
     }
 
@@ -126,6 +136,10 @@ public class Worker {
         sqsClient.sendMessage(sendMessageRequest);
     }
 
+
+    /**
+     * @preconditions: the output file path encapsulated in  toImage.Key() ends with .png
+     */
     public OperationResult accept(OperationMessage.ToImage toImage) throws NotImplementedException {
         infoLogger.log("Handling ToImage");
         Runtime rt = Runtime.getRuntime();
@@ -133,18 +147,14 @@ public class Worker {
             Process pr = rt.exec(String.format("wget %s -P %s", toImage.getInput(), Paths.get("input_files")));
             pr.waitFor();
             String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toImage.getInput())).toString();
-            String outputPathNoSuffix = Paths.get(System.getProperty("user.dir"), "output_files", toImage.getKey()).toString();
+            String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toImage.getKey()).toString();
             PDDocument document = PDDocument.load(new File(fileInputPath));
             PDFRenderer pdfRenderer = new PDFRenderer(document);
-            for (int page = 0; page < document.getNumberOfPages(); ++page)
-            {
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
-
-                // suffix in filename will be used as the file format
-                ImageIOUtil.writeImage(bim, outputPathNoSuffix + "-" + (page+1) + ".png", 300);
-            }
+            BufferedImage bim = pdfRenderer.renderImageWithDPI(REQUIRED_PAGE_INDEX, 300, ImageType.RGB);
+            // suffix in filename will be used as the file format
+            ImageIOUtil.writeImage(bim, outputPath, 300);
             document.close();
-            return new OperationResult(outputPathNoSuffix);
+            return new OperationResult(outputPath,fileInputPath);
         } catch (IOException e) {
             severLogger.log("Fail handling ToImage", e);
             return new FailedOperationResult("Fail handling ToImage", e);
@@ -166,7 +176,7 @@ public class Worker {
 
     public OperationResult accept(OperationMessage.FORTESTING fortesting) throws NotImplementedException {
         infoLogger.log("Handling FORTESTING");
-        return new OperationResult(Paths.get(System.getProperty("user.dir"), "test_files", "input", "key.jpg").toString());
+        return new OperationResult(Paths.get(System.getProperty("user.dir"), "test_files", "input", "key.jpg").toString(),null);
     }
 
     private OperationResult process(OperationMessage operationMessage) throws OperationMessage.UnfamiliarActionException {
@@ -193,6 +203,7 @@ public class Worker {
                 post(result, currentOperationMessage);
                 delete(currentOperationMessage);
                 notifai(result, currentOperationMessage);
+                clean(result, currentOperationMessage);
                 infoLogger.log("Done handling a message");
             } catch (OperationMessage.UnfamiliarActionException e) {
                 severLogger.log("Unfamiliar action received", e);

@@ -34,13 +34,18 @@ public class MainDummyActionTest extends MainTest{
                 "-a", action,
                 "-i", input,
                 "-b", outputS3Bucket,
-                "-k", outputS3Key,
+                "-k", getKey(),
                 "-t", nowInstant
         );
     }
 
     @Override
     protected String[] getExpectedOutputMsg() {
-        return new String[]{"-a",action,"-s","SUCCESS","-t", nowInstant,"-i",input,"-u",String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, outputS3Key ),"-d","NOT_TESTING"};
+        return new String[]{"-a",action,"-s","SUCCESS","-t", nowInstant,"-i",input,"-u",String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket,getKey()),"-d","NOT_TESTING"};
+    }
+
+    @Override
+    protected String getKey() {
+        return "someKey";
     }
 }

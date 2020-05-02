@@ -24,7 +24,7 @@ public abstract class MainTest {
     private Thread theMainThread;
     private String pushNotoficationsSqs;
     protected String outputS3Bucket;
-    protected String outputS3Key;
+//    protected String outputS3Key;
     private SqsClient sqs;
     private S3Client s3;
     private String operationsSqs;
@@ -35,7 +35,7 @@ public abstract class MainTest {
         pushNotoficationsSqs = "rotemb271TestPushNotificationsSqs"+new Date().getTime();
         operationsSqs = "rotemb271TestPushOperationsSqs"+ new Date().getTime();
         outputS3Bucket = "rotemb271-test-output-bucket2";
-        outputS3Key = "rotemb271TestOutputKey";
+//        outputS3Key = "rotemb271TestOutputKey";
         sqs = SqsClient.builder().region(Region.US_EAST_1).build();
         sqs.createQueue(CreateQueueRequest.builder()
                 .queueName(pushNotoficationsSqs)
@@ -83,12 +83,12 @@ public abstract class MainTest {
         }
         DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                 .bucket(outputS3Bucket)
-                .key(outputS3Key)
+                .key(getKey())
                 .build();
         s3.deleteObject(deleteObjectRequest);
         Runtime rt = Runtime.getRuntime();
         try {
-            Process pr = rt.exec(String.format("rm %s" ,Paths.get("test_files","output", outputS3Key)));
+            Process pr = rt.exec(String.format("rm %s" ,Paths.get("test_files","output", getKey())));
             pr.waitFor();
         } catch (IOException e) {
             e.printStackTrace();
@@ -156,12 +156,12 @@ public abstract class MainTest {
         return false;
     }
 
-    private File download(String address, String outputS3Key) {
+    private File download(String address, String key) {
         Runtime rt = Runtime.getRuntime();
         try {
             Process pr = rt.exec(String.format("wget %s -P %s" ,address, Paths.get("test_files","output")));
             pr.waitFor();
-            return new File(Paths.get(System.getProperty("user.dir"),outputS3Key).toString());
+            return new File(Paths.get(System.getProperty("user.dir"),key).toString());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -203,9 +203,10 @@ public abstract class MainTest {
                         getExpectedOutputMsg()
                 )
         );
-        assertTrue(isImage(download(String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, outputS3Key),outputS3Key)));
+        assertTrue(isImage(download(String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, getKey()),getKey())));
     }
 
     protected abstract String getOperationCMD();
+    protected abstract String getKey();
     protected abstract String[] getExpectedOutputMsg();
 }

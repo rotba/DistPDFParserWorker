@@ -6,8 +6,9 @@ import java.lang.invoke.WrongMethodTypeException;
 class OperationMessage {
     private final Message message;
     private CommandLine operation;
+    private Action action;
 
-    public OperationMessage(Message m) throws ParseException {
+    public OperationMessage(Message m) throws ParseException, UnfamiliarActionException {
         this.message = m;
         Options operationParsingOptions = new Options();
         Option action = new Option("a", "action", true, "action");
@@ -27,9 +28,10 @@ class OperationMessage {
         operationParsingOptions.addOption(timeStamp);
         CommandLineParser operationParser = new DefaultParser();
         operation = operationParser.parse(operationParsingOptions, message.body().split("\\s+"));
+        this.action = parseAction();
     }
 
-    public Action getAction() throws UnfamiliarActionException {
+    private Action parseAction() throws UnfamiliarActionException {
         if (operation.getOptionValue("a").equals("ToImage"))
             return new ToImage();
         if (operation.getOptionValue("a").equals("ToHTML"))
@@ -39,6 +41,10 @@ class OperationMessage {
         if (operation.getOptionValue("a").equals("FORTESTING"))
             return new FORTESTING();
         throw new UnfamiliarActionException(operation.getOptionValue("a"));
+    }
+
+    public Action getAction(){
+        return action;
     }
     public String getActionString(){
         return operation.getOptionValue("a");
