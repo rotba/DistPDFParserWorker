@@ -1,76 +1,38 @@
-May 02, 2020 7:45:43 AM logging.Logger log
+May 02, 2020 8:08:00 AM logging.Logger log
 INFO: Start
-May 02, 2020 7:45:43 AM logging.Logger log
+May 02, 2020 8:08:00 AM logging.Logger log
 INFO: Started working
-May 02, 2020 7:45:43 AM logging.Logger log
+May 02, 2020 8:08:00 AM logging.Logger log
 INFO: Started working on a message
-May 02, 2020 7:45:43 AM logging.Logger log
+May 02, 2020 8:08:00 AM logging.Logger log
 INFO: receiving
-May 02, 2020 7:45:43 AM logging.Logger log
+May 02, 2020 8:08:00 AM logging.Logger log
 INFO: busy waiting for message
-May 02, 2020 7:45:44 AM logging.Logger log
-INFO: Got message -a FORTESTING -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -b rotemb271-test-output-bucket2 -k someKey -t 2020-05-02T04:45:43.065318Z
-May 02, 2020 7:45:44 AM logging.Logger log
-INFO: Handling FORTESTING
-May 02, 2020 7:45:44 AM logging.Logger log
+May 02, 2020 8:08:01 AM logging.Logger log
+INFO: Got message -a ToText -i http://www.jfrankhenderson.com/pdf/jesusandseder.PDF -b rotemb271-test-output-bucket2 -k jesusandseder.txt -t 2020-05-02T05:07:59.940006Z
+May 02, 2020 8:08:01 AM logging.Logger log
+INFO: Handling ToText
+May 02, 2020 8:08:02 AM logging.Logger log
 INFO: posting
-May 02, 2020 7:45:44 AM logging.Logger log
+May 02, 2020 8:08:02 AM logging.Logger log
 INFO: Visibility manager interrupted and stops working
-May 02, 2020 7:45:44 AM logging.Logger log
+May 02, 2020 8:08:02 AM logging.Logger log
 INFO: posting
-May 02, 2020 7:45:45 AM logging.Logger log
+May 02, 2020 8:08:03 AM logging.Logger log
 INFO: deleting
-May 02, 2020 7:45:46 AM logging.Logger log
+May 02, 2020 8:08:03 AM logging.Logger log
 INFO: notifing
-May 02, 2020 7:45:46 AM logging.Logger log
-INFO: notifiyng: -a FORTESTING -i http://www.jewishfederations.org/local_includes/downloads/39497.pdf -s SUCCESS -t 2020-05-02T04:45:43.065318Z -d success -u https://rotemb271-test-output-bucket2.s3.amazonaws.com/someKey
-May 02, 2020 7:45:46 AM logging.Logger log
+May 02, 2020 8:08:03 AM logging.Logger log
+INFO: notifiyng: -a ToText -i http://www.jfrankhenderson.com/pdf/jesusandseder.PDF -s SUCCESS -t 2020-05-02T05:07:59.940006Z -d success -u https://rotemb271-test-output-bucket2.s3.amazonaws.com/jesusandseder.txt
+May 02, 2020 8:08:03 AM logging.Logger log
 INFO: cleaning
-May 02, 2020 7:45:46 AM logging.Logger log
+May 02, 2020 8:08:03 AM logging.Logger log
 INFO: Done handling a message
-May 02, 2020 7:45:46 AM logging.Logger log
+May 02, 2020 8:08:03 AM logging.Logger log
 INFO: Started working on a message
-May 02, 2020 7:45:46 AM logging.Logger log
+May 02, 2020 8:08:03 AM logging.Logger log
 INFO: receiving
-May 02, 2020 7:45:46 AM logging.Logger log
+May 02, 2020 8:08:04 AM logging.Logger log
 INFO: busy waiting for message
-May 02, 2020 7:45:53 AM logging.Logger log
-INFO: Done
-May 02, 2020 7:46:00 AM logging.Logger log
-INFO: Start
-May 02, 2020 7:46:00 AM logging.Logger log
-INFO: Started working
-May 02, 2020 7:46:00 AM logging.Logger log
-INFO: Started working on a message
-May 02, 2020 7:46:00 AM logging.Logger log
-INFO: receiving
-May 02, 2020 7:46:01 AM logging.Logger log
-INFO: busy waiting for message
-May 02, 2020 7:46:01 AM logging.Logger log
-INFO: Got message -a ToImage -i http://www.jfrankhenderson.com/pdf/jesusandseder.PDF -b rotemb271-test-output-bucket2 -k jesusandseder.png -t 2020-05-02T04:46:00.400182Z
-May 02, 2020 7:46:01 AM logging.Logger log
-INFO: Handling ToImage
-May 02, 2020 7:46:03 AM logging.Logger log
-INFO: posting
-May 02, 2020 7:46:03 AM logging.Logger log
-INFO: Visibility manager interrupted and stops working
-May 02, 2020 7:46:03 AM logging.Logger log
-INFO: posting
-May 02, 2020 7:46:06 AM logging.Logger log
-INFO: deleting
-May 02, 2020 7:46:06 AM logging.Logger log
-INFO: notifing
-May 02, 2020 7:46:07 AM logging.Logger log
-INFO: notifiyng: -a ToImage -i http://www.jfrankhenderson.com/pdf/jesusandseder.PDF -s SUCCESS -t 2020-05-02T04:46:00.400182Z -d success -u https://rotemb271-test-output-bucket2.s3.amazonaws.com/jesusandseder.png
-May 02, 2020 7:46:07 AM logging.Logger log
-INFO: cleaning
-May 02, 2020 7:46:07 AM logging.Logger log
-INFO: Done handling a message
-May 02, 2020 7:46:07 AM logging.Logger log
-INFO: Started working on a message
-May 02, 2020 7:46:07 AM logging.Logger log
-INFO: receiving
-May 02, 2020 7:46:07 AM logging.Logger log
-INFO: busy waiting for message
-May 02, 2020 7:46:10 AM logging.Logger log
+May 02, 2020 8:08:10 AM logging.Logger log
 INFO: Done

@@ -5,6 +5,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -13,7 +14,9 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -169,9 +172,28 @@ public class Worker {
         throw new NotImplementedException();
     }
 
-    public OperationResult accept(OperationMessage.ToText toText) throws NotImplementedException {
+    public OperationResult accept(OperationMessage.ToText toText)  {
         infoLogger.log("Handling ToText");
-        throw new NotImplementedException();
+        Runtime rt = Runtime.getRuntime();
+        String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toText.getInput())).toString();
+        String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toText.getKey()).toString();
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {
+            Process pr = rt.exec(String.format("wget %s -P %s", toText.getInput(), Paths.get("input_files")));
+            pr.waitFor();
+            PDDocument wholeDocument = PDDocument.load(new File(fileInputPath));
+            PDDocument theFirstPageDocument = new PDDocument();
+            theFirstPageDocument.addPage(wholeDocument.getPage(0));
+            writer.write(new PDFTextStripper().getText(theFirstPageDocument));
+            wholeDocument.close();
+            theFirstPageDocument.close();
+            return new OperationResult(outputPath,fileInputPath);
+        } catch (IOException e) {
+            severLogger.log("Fail handling ToImage", e);
+            return new FailedOperationResult("Fail handling ToImage", e);
+        } catch (InterruptedException e) {
+            severLogger.log("Fail handling ToImage", e);
+            return new FailedOperationResult("Fail handling ToImage", e);
+        }
     }
 
     public OperationResult accept(OperationMessage.FORTESTING fortesting) throws NotImplementedException {
