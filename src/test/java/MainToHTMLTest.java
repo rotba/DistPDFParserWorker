@@ -40,4 +40,12 @@ public class MainToHTMLTest extends MainTest{
     protected String getKey() {
         return "jesusandseder.html";
     }
+    @Override
+    protected void waitParsingTime() {
+        try {
+            Thread.sleep(5*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

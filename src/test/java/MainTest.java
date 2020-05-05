@@ -205,7 +205,7 @@ public abstract class MainTest {
             }
         });
         theMainThread.start();
-        Utils.waitParsingTime();
+        waitParsingTime();
         theMainThread.interrupt();
         assertTrue(
                 sqsContainsCommand(
@@ -216,6 +216,7 @@ public abstract class MainTest {
         assertTrue(isImage(download(String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, getKey()),getKey())));
     }
 
+    protected abstract void waitParsingTime();
     protected abstract String getOperationCMD();
     protected abstract String getKey();
     protected abstract String[] getExpectedOutputMsg();

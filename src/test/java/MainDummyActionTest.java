@@ -26,6 +26,15 @@ public class MainDummyActionTest extends MainTest {
     private String nowInstant;
 
     @Override
+    protected void waitParsingTime() {
+        try {
+            Thread.sleep(1*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected String getOperationCMD() {
         input = "http://www.jewishfederations.org/local_includes/downloads/39497.pdf";
         action = "FORTESTING";

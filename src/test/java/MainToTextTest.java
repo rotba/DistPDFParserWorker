@@ -40,4 +40,12 @@ public class MainToTextTest extends MainTest{
     protected String getKey() {
         return "jesusandseder.txt";
     }
+    @Override
+    protected void waitParsingTime() {
+        try {
+            Thread.sleep(5*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -41,4 +41,12 @@ public class MainToImageTest extends MainTest{
     protected String getKey() {
         return "jesusandseder.png";
     }
+    @Override
+    protected void waitParsingTime() {
+        try {
+            Thread.sleep(25*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
