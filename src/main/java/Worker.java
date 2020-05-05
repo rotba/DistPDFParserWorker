@@ -73,7 +73,7 @@ public class Worker {
                     .acl("public-read")
                     .build();
             infoLogger.log("posting");
-            PutObjectResponse putObjectResponse = s3Client.putObject(
+            s3Client.putObject(
                     putObjectRequest,
                     Paths.get(result.getOutputPath())
             );
@@ -84,7 +84,7 @@ public class Worker {
 
     private void clean(OperationResult result, OperationMessage currentOperationMessage) {
         infoLogger.log("cleaning");
-        if(currentOperationMessage.getAction() instanceof OperationMessage.FORTESTING) return;
+        if (currentOperationMessage.getAction() instanceof OperationMessage.FORTESTING) return;
         try {
             Files.deleteIfExists(new File(result.getInputPath()).toPath()); //
             Files.deleteIfExists(new File(result.getOutputPath()).toPath()); //
@@ -116,7 +116,9 @@ public class Worker {
                     "-s", "SUCCESS",
                     "-t", message.getTimeStamp(),
                     "-d", operationResult.getDesc(),
-                    "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s", message.getBucket(), message.getKey()))
+                    "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s", message.getBucket(), message.getKey())),
+                    "-b", operationResult.getFinalBucket(),
+                    "-k", operationResult.getFinalKey()
             );
             sendMessageRequest = builder
                     .messageBody(body
@@ -128,7 +130,9 @@ public class Worker {
                     "-t", message.getTimeStamp(),
                     "-s", "FAIL",
                     "-d", operationResult.getDesc(),
-                    "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s", message.getBucket(), message.getKey()))
+                    "-u", String.format(String.format("https://%s.s3.amazonaws.com/%s", message.getBucket(), message.getKey())),
+                    "-b", operationResult.getFinalBucket(),
+                    "-k", operationResult.getFinalKey()
             );
             sendMessageRequest = builder
                     .messageBody(body
@@ -160,13 +164,13 @@ public class Worker {
             ImageIOUtil.writeImage(bim, outputPath, 300);
             wholeDocument.close();
             theFirstPageDocument.close();
-            return new OperationResult(outputPath,fileInputPath);
+            return new OperationResult(outputPath, fileInputPath, toImage.getFinalBucket(), toImage.getFinalKey());
         } catch (IOException e) {
             severLogger.log("Fail handling ToImage", e);
-            return new FailedOperationResult("Fail handling ToImage", e);
+            return new FailedOperationResult("Fail handling ToImage", e, toImage.getFinalBucket(), toImage.getFinalKey());
         } catch (InterruptedException e) {
             severLogger.log("Fail handling ToImage", e);
-            return new FailedOperationResult("Fail handling ToImage", e);
+            return new FailedOperationResult("Fail handling ToImage", e, toImage.getFinalBucket(), toImage.getFinalKey());
         }
     }
 
@@ -175,7 +179,7 @@ public class Worker {
         Runtime rt = Runtime.getRuntime();
         String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toHTML.getInput())).toString();
         String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toHTML.getKey()).toString();
-        try(Writer output = new PrintWriter(outputPath, "utf-8");) {
+        try (Writer output = new PrintWriter(outputPath, "utf-8");) {
             Process pr = rt.exec(String.format("wget %s -P %s", toHTML.getInput(), Paths.get("input_files")));
             pr.waitFor();
             PDDocument wholeDocument = PDDocument.load(new File(fileInputPath));
@@ -184,19 +188,19 @@ public class Worker {
             new PDFDomTree().writeText(theFirstPageDocument, output);
             wholeDocument.close();
             theFirstPageDocument.close();
-            return new OperationResult(outputPath,fileInputPath);
-        } catch (IOException  | InterruptedException | ParserConfigurationException e) {
+            return new OperationResult(outputPath, fileInputPath, toHTML.getFinalBucket(), toHTML.getFinalKey());
+        } catch (IOException | InterruptedException | ParserConfigurationException e) {
             severLogger.log("Fail handling ToHTML", e);
-            return new FailedOperationResult("Fail handling ToHTML", e);
+            return new FailedOperationResult("Fail handling ToHTML", e, toHTML.getFinalBucket(), toHTML.getFinalKey());
         }
     }
 
-    public OperationResult accept(OperationMessage.ToText toText)  {
+    public OperationResult accept(OperationMessage.ToText toText) {
         infoLogger.log("Handling ToText");
         Runtime rt = Runtime.getRuntime();
         String fileInputPath = Paths.get(System.getProperty("user.dir"), "input_files", FilenameUtils.getName(toText.getInput())).toString();
         String outputPath = Paths.get(System.getProperty("user.dir"), "output_files", toText.getKey()).toString();
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {
             Process pr = rt.exec(String.format("wget %s -P %s", toText.getInput(), Paths.get("input_files")));
             pr.waitFor();
             PDDocument wholeDocument = PDDocument.load(new File(fileInputPath));
@@ -205,19 +209,24 @@ public class Worker {
             writer.write(new PDFTextStripper().getText(theFirstPageDocument));
             wholeDocument.close();
             theFirstPageDocument.close();
-            return new OperationResult(outputPath,fileInputPath);
+            return new OperationResult(outputPath, fileInputPath, toText.getFinalBucket(), toText.getFinalKey());
         } catch (IOException e) {
             severLogger.log("Fail handling ToText", e);
-            return new FailedOperationResult("Fail handling ToText", e);
+            return new FailedOperationResult("Fail handling ToText", e, toText.getFinalBucket(), toText.getFinalKey());
         } catch (InterruptedException e) {
             severLogger.log("Fail handling ToText", e);
-            return new FailedOperationResult("Fail handling ToText", e);
+            return new FailedOperationResult("Fail handling ToText", e, toText.getFinalBucket(), toText.getFinalKey());
         }
     }
 
     public OperationResult accept(OperationMessage.FORTESTING fortesting) throws NotImplementedException {
         infoLogger.log("Handling FORTESTING");
-        return new OperationResult(Paths.get(System.getProperty("user.dir"), "test_files", "input", "key.jpg").toString(),null);
+        return new OperationResult(
+                Paths.get(System.getProperty("user.dir"), "test_files", "input", "key.jpg").toString(),
+                null,
+                fortesting.getFinalBucket(),
+                fortesting.getFinalKey()
+        );
     }
 
     private OperationResult process(OperationMessage operationMessage) throws OperationMessage.UnfamiliarActionException {
@@ -228,7 +237,7 @@ public class Worker {
             res = operationMessage.getAction().visit(this);
         } catch (NotImplementedException e) {
             severLogger.log("Not impleneted operation", e);
-            res = new FailedOperationResult("Operation not implemented",e);
+            res = new FailedOperationResult("Operation not implemented", e, operationMessage.getFinalBucket(), operationMessage.getFinalKey());
         }
         visibilityMenager.interrupt();
         return res;

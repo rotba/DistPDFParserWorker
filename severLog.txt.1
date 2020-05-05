@@ -1,5 +1,5 @@
-May 02, 2020 8:12:36 AM logging.Logger log
-SEVERE: [Ljava.lang.StackTraceElement;@3f59eae7
+May 05, 2020 8:44:22 AM logging.Logger log
+SEVERE: [Ljava.lang.StackTraceElement;@71c0dd0b
 software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.exception.AbortedException$BuilderImpl.build(AbortedException.java:83)
 	at software.amazon.awssdk.core.exception.AbortedException.create(AbortedException.java:38)
@@ -28,10 +28,10 @@ software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.client.handler.SdkSyncClientHandler.execute(SdkSyncClientHandler.java:44)
 	at software.amazon.awssdk.awscore.client.handler.AwsSyncClientHandler.execute(AwsSyncClientHandler.java:55)
 	at software.amazon.awssdk.services.sqs.DefaultSqsClient.receiveMessage(DefaultSqsClient.java:1044)
-	at Worker.receive(Worker.java:59)
-	at Worker.work(Worker.java:227)
+	at Worker.receive(Worker.java:58)
+	at Worker.work(Worker.java:251)
 	at Main.main(Main.java:42)
-	at MainTest.lambda$main$0(MainTest.java:188)
+	at MainTest.lambda$main$0(MainTest.java:198)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
 	at software.amazon.awssdk.core.internal.http.InterruptMonitor.checkInterrupted(InterruptMonitor.java:39)
@@ -45,8 +45,8 @@ Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
 	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:77)
 	... 27 more
 
-May 02, 2020 8:12:53 AM logging.Logger log
-SEVERE: [Ljava.lang.StackTraceElement;@2f9b6e4f
+May 05, 2020 8:44:58 AM logging.Logger log
+SEVERE: [Ljava.lang.StackTraceElement;@5d520100
 software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.exception.AbortedException$BuilderImpl.build(AbortedException.java:83)
 	at software.amazon.awssdk.core.exception.AbortedException.create(AbortedException.java:38)
@@ -74,11 +74,11 @@ software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.client.handler.BaseSyncClientHandler.execute(BaseSyncClientHandler.java:73)
 	at software.amazon.awssdk.core.client.handler.SdkSyncClientHandler.execute(SdkSyncClientHandler.java:44)
 	at software.amazon.awssdk.awscore.client.handler.AwsSyncClientHandler.execute(AwsSyncClientHandler.java:55)
-	at software.amazon.awssdk.services.sqs.DefaultSqsClient.receiveMessage(DefaultSqsClient.java:1044)
-	at Worker.receive(Worker.java:59)
-	at Worker.work(Worker.java:227)
+	at software.amazon.awssdk.services.sqs.DefaultSqsClient.getQueueUrl(DefaultSqsClient.java:716)
+	at Worker.receive(Worker.java:49)
+	at Worker.work(Worker.java:251)
 	at Main.main(Main.java:42)
-	at MainTest.lambda$main$0(MainTest.java:188)
+	at MainTest.lambda$main$0(MainTest.java:198)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
 	at software.amazon.awssdk.core.internal.http.InterruptMonitor.checkInterrupted(InterruptMonitor.java:39)
@@ -92,8 +92,8 @@ Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
 	at software.amazon.awssdk.core.internal.http.pipeline.stages.TimeoutExceptionHandlingStage.execute(TimeoutExceptionHandlingStage.java:77)
 	... 27 more
 
-May 02, 2020 8:13:12 AM logging.Logger log
-SEVERE: [Ljava.lang.StackTraceElement;@4736c113
+May 05, 2020 8:45:28 AM logging.Logger log
+SEVERE: [Ljava.lang.StackTraceElement;@7c1f09e8
 software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.exception.AbortedException$BuilderImpl.build(AbortedException.java:83)
 	at software.amazon.awssdk.core.exception.AbortedException.create(AbortedException.java:38)
@@ -122,10 +122,10 @@ software.amazon.awssdk.core.exception.AbortedException: Thread was interrupted
 	at software.amazon.awssdk.core.client.handler.SdkSyncClientHandler.execute(SdkSyncClientHandler.java:44)
 	at software.amazon.awssdk.awscore.client.handler.AwsSyncClientHandler.execute(AwsSyncClientHandler.java:55)
 	at software.amazon.awssdk.services.sqs.DefaultSqsClient.receiveMessage(DefaultSqsClient.java:1044)
-	at Worker.receive(Worker.java:59)
-	at Worker.work(Worker.java:227)
+	at Worker.receive(Worker.java:58)
+	at Worker.work(Worker.java:251)
 	at Main.main(Main.java:42)
-	at MainTest.lambda$main$0(MainTest.java:188)
+	at MainTest.lambda$main$0(MainTest.java:198)
 	at java.base/java.lang.Thread.run(Thread.java:834)
 Caused by: software.amazon.awssdk.core.exception.SdkInterruptedException
 	at software.amazon.awssdk.core.internal.http.InterruptMonitor.checkInterrupted(InterruptMonitor.java:39)

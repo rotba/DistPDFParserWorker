@@ -14,7 +14,6 @@ import software.amazon.awssdk.services.sqs.model.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -24,7 +23,8 @@ public abstract class MainTest {
     private Thread theMainThread;
     private String pushNotoficationsSqs;
     protected String outputS3Bucket;
-//    protected String outputS3Key;
+    protected String tasksBucket;
+    protected String finalOutputKey;
     private SqsClient sqs;
     private S3Client s3;
     private String operationsSqs;
@@ -48,19 +48,8 @@ public abstract class MainTest {
                 .builder()
                 .bucket(outputS3Bucket)
                 .build());
-    }
-
-    private void emptySQS(String sqsName) {
-        String queueUrl = sqs.getQueueUrl(
-                GetQueueUrlRequest.builder()
-                        .queueName(sqsName)
-                        .build()
-        ).queueUrl();
-
-        DeleteQueueRequest deleteQueueRequest = DeleteQueueRequest.builder()
-                .queueUrl(queueUrl)
-                .build();
-        sqs.deleteQueue(deleteQueueRequest);
+        tasksBucket = "rotemb271-test-tasks-bucket"+new Date().getTime();
+        finalOutputKey = "rotemb271-test-final-key" +new Date().getTime();
     }
 
     @After
@@ -97,6 +86,19 @@ public abstract class MainTest {
         }
     }
 
+    private void emptySQS(String sqsName) {
+        String queueUrl = sqs.getQueueUrl(
+                GetQueueUrlRequest.builder()
+                        .queueName(sqsName)
+                        .build()
+        ).queueUrl();
+
+        DeleteQueueRequest deleteQueueRequest = DeleteQueueRequest.builder()
+                .queueUrl(queueUrl)
+                .build();
+        sqs.deleteQueue(deleteQueueRequest);
+    }
+
     private boolean isWorker(Instance instance) {
         for (Tag t:instance.tags()) {
             if (t.key().equals("Name") && t.value().equals("Worker"))
@@ -125,6 +127,12 @@ public abstract class MainTest {
         Option description = new Option("d", "description", true, "description");
         description.setRequired(true);
         operationParsingOptions.addOption(description);
+        Option tasksBucket = new Option("b", "tasksbucket", true, "tasksbucket");
+        tasksBucket.setRequired(true);
+        operationParsingOptions.addOption(tasksBucket);
+        Option finalKey = new Option("k", "finalkey", true, "finalkey");
+        finalKey.setRequired(true);
+        operationParsingOptions.addOption(finalKey);
         CommandLineParser operationParser = new DefaultParser();
         try {
             CommandLine expectedCmd = operationParser.parse(operationParsingOptions, expected);
@@ -133,7 +141,9 @@ public abstract class MainTest {
                     expectedCmd.getOptionValue("i").equals(operationResultCmd.getOptionValue("i")) &&
                     expectedCmd.getOptionValue("s").equals(operationResultCmd.getOptionValue("s")) &&
                     expectedCmd.getOptionValue("u").equals(operationResultCmd.getOptionValue("u")) &&
-                    expectedCmd.getOptionValue("t").equals(operationResultCmd.getOptionValue("t"));
+                    expectedCmd.getOptionValue("t").equals(operationResultCmd.getOptionValue("t")) &&
+                    expectedCmd.getOptionValue("k").equals(operationResultCmd.getOptionValue("k")) &&
+                    expectedCmd.getOptionValue("b").equals(operationResultCmd.getOptionValue("b"));
         } catch (ParseException e) {
             e.printStackTrace();
             return false;

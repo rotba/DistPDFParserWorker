@@ -26,6 +26,12 @@ class OperationMessage {
         Option timeStamp = new Option("t", "timestamp", true, "unique timestamp");
         timeStamp.setRequired(true);
         operationParsingOptions.addOption(timeStamp);
+        Option finalBucket = new Option("fb", "finalBucket", true, "unique finalBucket");
+        finalBucket.setRequired(true);
+        operationParsingOptions.addOption(finalBucket);
+        Option finalKey = new Option("fk", "finalKey", true, "unique finalKey");
+        finalKey.setRequired(true);
+        operationParsingOptions.addOption(finalKey);
         CommandLineParser operationParser = new DefaultParser();
         operation = operationParser.parse(operationParsingOptions, message.body().split("\\s+"));
         this.action = parseAction();
@@ -56,27 +62,40 @@ class OperationMessage {
     public String getBucket() {
         return operation.getOptionValue("b");
     }
-
     public String getKey() {
         return operation.getOptionValue("k");
+    }
+    public String getFinalBucket() {
+        return operation.getOptionValue("fb");
+    }
+
+    public String getFinalKey() {
+        return operation.getOptionValue("fk");
     }
     public String getTimeStamp() {
         return operation.getOptionValue("t");
     }
-
     public Message getMessage() {
         return message;
     }
     abstract class Action{
+
         public abstract OperationResult visit(Worker worker) throws Worker.NotImplementedException;
 
         public  String getInput(){
             return OperationMessage.this.getInput();
         }
-
         public String getKey() {
             return OperationMessage.this.getKey();
         }
+
+        public String getFinalBucket(){
+            return OperationMessage.this.getFinalBucket();
+        }
+        public String getFinalKey(){
+            return OperationMessage.this.getFinalKey();
+        }
+
     }
 
     class ToImage extends Action{

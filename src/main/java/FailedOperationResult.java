@@ -2,8 +2,8 @@ public class FailedOperationResult extends OperationResult {
     private final String operationNotImpleneted;
     private final Throwable throwable;
 
-    public FailedOperationResult(String operationNotImpleneted, Throwable throwable) {
-        super(null,null);
+    public FailedOperationResult(String operationNotImpleneted, Throwable throwable, String finalBucket,String finalKey ) {
+        super(null,null,finalBucket,finalKey);
         this.operationNotImpleneted = operationNotImpleneted;
         this.throwable = throwable;
     }

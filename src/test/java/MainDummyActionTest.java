@@ -19,7 +19,7 @@ import java.time.Instant;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class MainDummyActionTest extends MainTest{
+public class MainDummyActionTest extends MainTest {
 
     private String input;
     private String action;
@@ -35,13 +35,24 @@ public class MainDummyActionTest extends MainTest{
                 "-i", input,
                 "-b", outputS3Bucket,
                 "-k", getKey(),
-                "-t", nowInstant
+                "-t", nowInstant,
+                "-fb", tasksBucket,
+                "-fk", finalOutputKey
         );
     }
 
     @Override
     protected String[] getExpectedOutputMsg() {
-        return new String[]{"-a",action,"-s","SUCCESS","-t", nowInstant,"-i",input,"-u",String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket,getKey()),"-d","NOT_TESTING"};
+        return new String[]{
+                "-a", action,
+                "-s", "SUCCESS",
+                "-t", nowInstant,
+                "-i", input,
+                "-u", String.format("https://%s.s3.amazonaws.com/%s", outputS3Bucket, getKey()),
+                "-d", "NOT_TESTING",
+                "-b", tasksBucket,
+                "-k",finalOutputKey
+        };
     }
 
     @Override
